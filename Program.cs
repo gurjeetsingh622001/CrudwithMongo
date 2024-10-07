@@ -14,6 +14,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<MongoDbServices>();
 builder.Services.AddTransient<EncryptionHelper>();
 builder.Services.AddScoped<EncryptionHelper>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,9 +31,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseMiddleware<EncryptionMiddleWare>();
+//app.UseMiddleware<EncryptionMiddleWare>();
 
 app.UseHttpsRedirection();
+
+
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
 
